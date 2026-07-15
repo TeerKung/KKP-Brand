@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaladHOD | ระบบพนักงาน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="text-slate-900 pt-28">
+
+    <nav class="fixed w-full z-50 top-0 bg-[#f4f4f0]/90 backdrop-blur-sm border-b-4 border-black">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
+            <a href="index.html" class="font-black text-3xl uppercase tracking-tighter">
+                🥬 SALAD<span class="text-lime-500">HOD</span>
+            </a>
+            <div class="hidden md:flex space-x-10 font-bold text-lg uppercase">
+                <a href="index.html" class="hover:text-lime-600 transition-all">Home</a>
+                <a href="menu.html" class="hover:text-lime-600 transition-all">Menu</a>
+                <a href="login.html" class="text-lime-600 border-b-4 border-black">Staff Management</a>
+            </div>
+            <a href="index.html" class="bg-black text-white px-6 py-2 rounded-full font-bold brutal-btn uppercase">Exit Portal</a>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-12">
+        
+        <div class="brutal-card p-8 rounded-2xl bg-white">
+            <h3 class="text-3xl font-black uppercase mb-6">👤 STAFF LOGIN</h3>
+            <form class="space-y-5" id="loginForm">
+                <div>
+                    <label class="block font-bold mb-2">รหัสประจำตัวพนักงาน (ID บนบัตร)</label>
+                    <input type="text" id="empId" placeholder="เช่น EMP001" class="w-full p-3 border-4 border-black font-medium focus:outline-none focus:bg-lime-50" required>
+                </div>
+                <div>
+                    <label class="block font-bold mb-2">รหัสผ่าน (Password)</label>
+                    <input type="password" id="empPwd" placeholder="••••••••" class="w-full p-3 border-4 border-black font-medium focus:outline-none focus:bg-lime-50" required>
+                </div>
+                <button type="submit" class="w-full bg-black text-white font-bold py-3 brutal-btn uppercase">เข้าสู่ระบบ</button>
+            </form>
+        </div>
+
+        <div class="brutal-card p-8 rounded-2xl bg-lime-300 flex flex-col justify-between">
+            <div>
+                <h3 class="text-3xl font-black uppercase mb-2">📁 BUILD ACCOUNT VIA FILE</h3>
+                <p class="font-medium text-slate-800 mb-6">สร้างบัญชีพนักงานล็อตใหญ่ด้วยการอัปโหลดไฟล์รายชื่อพนักงาน (.csv)</p>
+                
+                <form action="/api/upload-staff" method="POST" enctype="multipart/form-data" class="space-y-6">
+                    <div class="border-4 border-dashed border-black bg-white p-6 text-center rounded-xl relative hover:bg-slate-50 cursor-pointer">
+                        <input type="file" name="staffFile" accept=".csv" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required onchange="document.getElementById('fileName').innerText = this.files[0].name">
+                        <span class="text-4xl block mb-2">📄</span>
+                        <span id="fileName" class="font-bold text-black block">คลิกเพื่อเลือกไฟล์พนักงาน .csv</span>
+                    </div>
+                    <button type="submit" class="w-full bg-black text-white font-bold py-3 brutal-btn uppercase">อัปโหลดและสร้างบัญชี</button>
+                </form>
+            </div>
+            
+            <div class="mt-6 p-3 bg-white border-2 border-black text-xs font-mono">
+                <strong>Format ไฟล์ CSV ที่ถูกต้อง:</strong><br>
+                id,name,role<br>
+                EMP001,TeerKung,Owner<br>
+                EMP002,JohnDoe,Chef
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const employeeId = document.getElementById('empId').value;
+            const password = document.getElementById('empPwd').value;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ employeeId, password })
+                });
+
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
+            }
+        });
+    </script>
+</body>
+</html>
